@@ -1,0 +1,4 @@
+get -> menampilkan data
+put/patch->proses updet
+post->proses tambah
+DELETE ->proses hapus

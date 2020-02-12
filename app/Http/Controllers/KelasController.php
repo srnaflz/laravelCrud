@@ -12,9 +12,17 @@ class KelasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    #middleware sebagai satpam
+    
+    public function __construct(){
+        return $this->middleware('auth');
+
+    }
     public function index()
     {
         //
+        $kelas = Kelas::all();
+        return view('kelas.index',compact('kelas'));
     }
 
     /**
@@ -24,7 +32,9 @@ class KelasController extends Controller
      */
     public function create()
     {
-        //
+        //Menampilkan ke halaman FROM INPUT
+        return view('kelas.create');
+        
     }
 
     /**
@@ -36,6 +46,10 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         //
+        $kelas = new Kelas();
+        $kelas->nama = $request->nama;
+        $kelas->save();
+        return redirect()->route('kelas.index');
     }
 
     /**
@@ -44,8 +58,10 @@ class KelasController extends Controller
      * @param  \App\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function show(Kelas $kelas)
+    public function show($id)
     {
+        $kelas = Kelas::findOrFail($id);
+        return view('kelas.show',compact('kelas'));
         //
     }
 
@@ -55,8 +71,10 @@ class KelasController extends Controller
      * @param  \App\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function edit(Kelas $kelas)
+    public function edit( $id)
     {
+        $kelas = Kelas::findOrFail($id);
+        return view('kelas.edit',compact('kelas'));
         //
     }
 
@@ -67,8 +85,12 @@ class KelasController extends Controller
      * @param  \App\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Kelas $kelas)
+    public function update(Request $request,$id)
     {
+        $kelas = Kelas::findOrFail($id);
+        $kelas->nama = $request->nama;
+        $kelas->save();
+        return redirect()->route('kelas.index');
         //
     }
 
@@ -78,8 +100,11 @@ class KelasController extends Controller
      * @param  \App\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kelas $kelas)
+    public function destroy($id)
     {
+        $kelas = Kelas::findOrFail($id)->delete();
+        return redirect()->route('kelas.index');
+
         //
     }
 }
