@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Siswa;
+use App\Kelas;
+
 use Illuminate\Http\Request;
+
+use DB;
+use App\Mapel;
 
 class SiswaController extends Controller
 {
@@ -12,9 +17,20 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+      
+    public function __construct(){
+        return $this->middleware('auth');
+
+    }
     public function index()
     {
-        //
+     //   $siswa = DB::table('siswas')
+       // ->join('kelas', 'kelas.id', '=', 'siswas.id_kelas')
+        //->select('siswas.id', 'siswas.nis', 'siswas.nama','siswas.alamat','kelas.kelas')
+        //->get();
+       // $siswa = Siswa::all();
+          $siswa = Siswa::with('kelas','mapel')->get();
+        return view('siswa.index',compact('siswa'));
     }
 
     /**
@@ -24,7 +40,13 @@ class SiswaController extends Controller
      */
     public function create()
     {
+        $kelas = Kelas::all();
+        $mapel = Mapel::all();
+
+        return view('siswa.create', compact('kelas','mapel'));
+
         //
+        
     }
 
     /**
@@ -36,6 +58,14 @@ class SiswaController extends Controller
     public function store(Request $request)
     {
         //
+        $siswa = new Siswa();
+        $siswa->nis = $request->nis;
+        $siswa->nama = $request->nama;
+        $siswa->alamat = $request->alamat;
+        $siswa->id_kelas = $request->id_kelas;
+        $siswa->save();
+        $siswa->mapel()->attach($request->mapel);
+        return redirect()->route('siswa.index');
     }
 
     /**
@@ -44,9 +74,14 @@ class SiswaController extends Controller
      * @param  \App\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function show(Siswa $siswa)
+    public function show($id)
     {
         //
+        $kelas = Kelas::all();
+        $siswa = Siswa::findOrFail($id);
+        return view('siswa.show',compact('siswa','kelas'));
+
+
     }
 
     /**
@@ -55,9 +90,14 @@ class SiswaController extends Controller
      * @param  \App\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function edit(Siswa $siswa)
+    public function edit($id)
     {
         //
+        $kelas = Kelas::all();
+        $siswa = Siswa::findOrFail($id);
+        $mapel = Mapel::all();
+        $selected = $siswa->mapel->pluck('id')->toarray();
+        return view('siswa.edit',compact('siswa','selected','kelas','mapel'));
     }
 
     /**
@@ -67,8 +107,17 @@ class SiswaController extends Controller
      * @param  \App\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, $id)
     {
+        //
+        $siswa = Siswa::findOrFail($id);
+        $siswa->nis = $request->nis;
+        $siswa->nama = $request->nama;
+        $siswa->alamat = $request->alamat;
+        $siswa->id_kelas = $request->id_kelas;
+        $siswa->save();
+        $siswa->mapel()->sync($request->mapel);
+        return redirect()->route('siswa.index');
         //
     }
 
@@ -78,8 +127,13 @@ class SiswaController extends Controller
      * @param  \App\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Siswa $siswa)
+    public function destroy($id)
     {
         //
+        $siswa = Siswa::findOrFail($id);
+        $siswa->mapel()->detach();
+        $siswa->delete();
+        return redirect()->route('siswa.index');;
+        
     }
 }

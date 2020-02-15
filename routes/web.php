@@ -22,3 +22,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 //11-2-2020 selasa ~CRUD
 Route::resource('kelas','KelasController');
 Route::resource('mapel','MapelController');
+Route::resource('siswa','SiswaController');

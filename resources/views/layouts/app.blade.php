@@ -39,10 +39,22 @@
                      Daftar kelas
                      </a>
                      </li>
+                     </ul>
+
+                     <ul class="navbar-nav mr-auto">
                      <li>
                     <a class="navbar-brand"
                      href="{{route('mapel.index')}}">
                      Daftar Mata Pelajaran
+                     </a>
+                     </li>
+                     </ul>
+
+                     <ul class="navbar-nav mr-auto">
+                     <li>
+                    <a class="navbar-brand"
+                     href="{{route('siswa.index')}}">
+                     Daftar Siswa
                      </a>
                      </li>
                     </ul>
